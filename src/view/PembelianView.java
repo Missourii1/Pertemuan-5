@@ -13,7 +13,6 @@ public class PembelianView extends javax.swing.JFrame {
         initComponents();
     }
 
-    // Getter & Setter yang sudah ada (dipertahankan agar kompatibilitas 100%)
     public String getJumlahBeli() {
         return txtJumlah.getText();
     }
@@ -38,6 +37,10 @@ public class PembelianView extends javax.swing.JFrame {
         return btnBeli;
     }
 
+    public JButton getBtnCetakStruk() {
+        return btnCetakStruk;
+    }
+
     public JTable getTblTransaksi() {
         return tblTransaksi;
     }
@@ -50,7 +53,6 @@ public class PembelianView extends javax.swing.JFrame {
         return btnNavLogout;
     }
 
-    // Komponen tambahan untuk desain modern konsisten
     public JButton getBtnNavDashboard() {
         return btnNavDashboard;
     }
@@ -95,6 +97,7 @@ public class PembelianView extends javax.swing.JFrame {
         lblJumlah = new javax.swing.JLabel();
         txtJumlah = new javax.swing.JTextField();
         btnBeli = new javax.swing.JButton();
+        btnCetakStruk = new javax.swing.JButton();
         panelTableCard = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -263,6 +266,12 @@ public class PembelianView extends javax.swing.JFrame {
         btnBeli.setText("BELI SEKARANG");
         btnBeli.setFocusPainted(false);
 
+        btnCetakStruk.setBackground(new java.awt.Color(240, 240, 240));
+        btnCetakStruk.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnCetakStruk.setForeground(new java.awt.Color(34, 34, 34));
+        btnCetakStruk.setText("CETAK STRUK TERAKHIR");
+        btnCetakStruk.setFocusPainted(false);
+
         javax.swing.GroupLayout panelBeliCardLayout = new javax.swing.GroupLayout(panelBeliCard);
         panelBeliCard.setLayout(panelBeliCardLayout);
         panelBeliCardLayout.setHorizontalGroup(
@@ -277,7 +286,8 @@ public class PembelianView extends javax.swing.JFrame {
                     .addComponent(cmbPilihBuah, 0, 242, Short.MAX_VALUE)
                     .addComponent(lblJumlah)
                     .addComponent(txtJumlah)
-                    .addComponent(btnBeli, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnBeli, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                    .addComponent(btnCetakStruk, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         panelBeliCardLayout.setVerticalGroup(
@@ -297,9 +307,11 @@ public class PembelianView extends javax.swing.JFrame {
                 .addComponent(lblJumlah)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
-                .addComponent(btnBeli, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(90, Short.MAX_VALUE))
+                .addGap(20, 20, 20)
+                .addComponent(btnBeli, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCetakStruk, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         panelTableCard.setBackground(new java.awt.Color(255, 255, 255));
@@ -384,6 +396,7 @@ public class PembelianView extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBeli;
+    private javax.swing.JButton btnCetakStruk;
     private javax.swing.JButton btnNavDashboard;
     private javax.swing.JButton btnNavDataBuah;
     private javax.swing.JButton btnNavLogout;

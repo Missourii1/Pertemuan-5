@@ -243,7 +243,8 @@
                           <Component id="cmbPilihBuah" alignment="0" pref="242" max="32767" attributes="0"/>
                           <Component id="lblJumlah" min="-2" max="-2" attributes="0"/>
                           <Component id="txtJumlah" alignment="0" max="32767" attributes="0"/>
-                          <Component id="btnBeli" alignment="0" max="32767" attributes="0"/>
+                          <Component id="btnBeli" alignment="0" pref="242" max="32767" attributes="0"/>
+                          <Component id="btnCetakStruk" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace pref="20" max="32767" attributes="0"/>
                   </Group>
@@ -266,9 +267,11 @@
                       <Component id="lblJumlah" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="txtJumlah" min="-2" pref="34" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
-                      <Component id="btnBeli" min="-2" pref="40" max="-2" attributes="0"/>
-                      <EmptySpace pref="90" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                      <Component id="btnBeli" min="-2" pref="38" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="btnCetakStruk" min="-2" pref="38" max="-2" attributes="0"/>
+                      <EmptySpace pref="40" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -459,6 +462,21 @@
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="BELI SEKARANG"/>
+                <Property name="focusPainted" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnCetakStruk">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f0" green="f0" red="f0" type="rgb"/>
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="13" style="1"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="22" green="22" red="22" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="CETAK STRUK TERAKHIR"/>
                 <Property name="focusPainted" type="boolean" value="false"/>
               </Properties>
             </Component>

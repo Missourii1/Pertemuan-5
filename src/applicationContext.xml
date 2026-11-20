@@ -56,6 +56,7 @@
 
     <bean id="userDao" class="dao.UserDao">
         <property name="hibernateTemplate" ref="hibernateTemplate" />
+        <property name="transactionManager" ref="transactionManager" />
     </bean>
 
     <bean id="transaksiDao" class="dao.TransaksiDao">

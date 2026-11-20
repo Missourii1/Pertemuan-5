@@ -1,10 +1,12 @@
 package controller;
 
 import config.AppContext;
+import config.ReportManager;
 import dao.BuahDao;
 import dao.TransaksiDao;
 import model.Buah;
 import model.DetailTransaksi;
+import model.StrukItem;
 import model.Transaksi;
 import model.User;
 import view.BuahView;
@@ -15,6 +17,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +29,10 @@ public class PembelianController {
     private User currentUser;
     private TransaksiDao transaksiDao;
     private BuahDao buahDao;
+
+    // Cache transaksi terakhir untuk pencetakan struk
+    private Transaksi lastTransaksi;
+    private List<StrukItem> lastItems = new ArrayList<>();
 
     public PembelianController(Buah buah, PembelianView view, User currentUser) {
         this.buah = buah;
@@ -39,8 +46,9 @@ public class PembelianController {
         initComboBox();
         tampilkanDetailBuah(this.buah);
 
-        // Menghubungkan tombol BELI dan LOGOUT
+        // Menghubungkan tombol aksi
         view.getBtnBeli().addActionListener(e -> prosesPembelian());
+        view.getBtnCetakStruk().addActionListener(e -> cetakStrukTerakhir());
         view.getBtnLogout().addActionListener(e -> prosesLogout());
     }
 
@@ -49,7 +57,6 @@ public class PembelianController {
     }
 
     private void initSidebar() {
-        // Navigasi Sidebar yang konsisten
         view.getBtnNavDashboard().addActionListener(e -> {
             DashboardView dashboard = new DashboardView();
             new DashboardController(dashboard, currentUser);
@@ -76,7 +83,6 @@ public class PembelianController {
             }
             view.getCmbPilihBuah().setModel(comboModel);
 
-            // Pilih buah yang sedang aktif jika ada
             if (buah != null) {
                 for (int i = 0; i < comboModel.getSize(); i++) {
                     Buah item = comboModel.getElementAt(i);
@@ -87,7 +93,6 @@ public class PembelianController {
                 }
             }
 
-            // Listener pergantian pilihan buah
             view.getCmbPilihBuah().addActionListener(e -> {
                 Buah selected = (Buah) view.getCmbPilihBuah().getSelectedItem();
                 if (selected != null) {
@@ -145,7 +150,6 @@ public class PembelianController {
             return;
         }
 
-        // Ambil stok ter-update dari database
         Buah freshBuah = buahDao.getBuahById(buah.getIdBuah());
         if (freshBuah != null) {
             this.buah = freshBuah;
@@ -156,17 +160,14 @@ public class PembelianController {
             return;
         }
 
-        // Perhitungan akurat dengan BigDecimal
         BigDecimal subtotal = buah.getHarga().multiply(BigDecimal.valueOf(jumlah));
 
-        // Header Transaksi
         int userId = (currentUser != null && currentUser.getIdUser() > 0) ? currentUser.getIdUser() : 1;
         Transaksi transaksi = new Transaksi();
         transaksi.setIdUser(userId);
         transaksi.setTanggal(new Date());
         transaksi.setTotal(subtotal);
 
-        // Detail Transaksi
         DetailTransaksi detail = new DetailTransaksi();
         detail.setIdBuah(buah.getIdBuah());
         detail.setBuah(buah);
@@ -177,15 +178,12 @@ public class PembelianController {
         List<DetailTransaksi> listDetail = new ArrayList<>();
         listDetail.add(detail);
 
-        // Eksekusi atomik via Spring Hibernate
         boolean sukses = transaksiDao.simpanTransaksi(transaksi, listDetail);
 
         if (sukses) {
-            // Update stok buah lokal & tampilan
             buah.setStok(buah.getStok() - jumlah);
             view.setStokBuah(String.valueOf(buah.getStok()));
 
-            // Masukkan ke riwayat JTable
             DefaultTableModel model = (DefaultTableModel) view.getTblTransaksi().getModel();
             model.addRow(new Object[]{
                 buah.getNama(),
@@ -193,10 +191,42 @@ public class PembelianController {
                 "Rp" + subtotal
             });
 
-            view.tampilkanPesan("Pembelian berhasil dan tersimpan ke MySQL via Spring Hibernate!\nTotal: Rp" + subtotal);
+            // Simpan cache transaksi untuk cetak struk
+            this.lastTransaksi = transaksi;
+            this.lastItems.clear();
+            this.lastItems.add(new StrukItem(buah.getNama(), "Rp" + buah.getHarga(), jumlah, "Rp" + subtotal));
+
             view.setJumlahBeli("");
+
+            // Tawaran cetak struk nota JasperReports
+            int opsi = JOptionPane.showConfirmDialog(
+                view,
+                "Pembelian berhasil!\nTotal: Rp" + subtotal + "\n\nApakah Anda ingin mencetak struk nota sekarang?",
+                "Transaksi Sukses",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (opsi == JOptionPane.YES_OPTION) {
+                cetakStrukTerakhir();
+            }
+
         } else {
             view.tampilkanPesan("Transaksi pembelian gagal disimpan ke database!");
         }
+    }
+
+    private void cetakStrukTerakhir() {
+        if (lastTransaksi == null || lastItems.isEmpty()) {
+            view.tampilkanPesan("Belum ada transaksi terakhir untuk dicetak!");
+            return;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        String tglStr = sdf.format(lastTransaksi.getTanggal() != null ? lastTransaksi.getTanggal() : new Date());
+        String kasir = (currentUser != null && currentUser.getNamaLengkap() != null) ? currentUser.getNamaLengkap() : "Kasir";
+        String totalStr = "Rp" + lastTransaksi.getTotal();
+
+        ReportManager.cetakStruk(lastTransaksi.getIdTransaksi(), kasir, tglStr, totalStr, lastItems);
     }
 }
